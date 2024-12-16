@@ -1,0 +1,12 @@
+name: FinalCuba
+title: FinalCuba
+username: vivienyin
+account: vivienyin
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13604277
+bundleId: 9526954
+url: https://vivienyin.shinyapps.io/FinalCuba/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

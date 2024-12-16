@@ -1,0 +1,174 @@
+---
+title: "CubaReport"
+author: "Liwen Yin"
+format: pdf
+editor: visual
+---
+
+# Cuba report
+![](cuba2.jpg){fig-align="center" fig-width="100%"}
+
+## Map of Cuba
+
+Cuba, officially the Republic of Cuba, is an island country, comprising the island of Cuba (largest island), Isla de la Juventud, and 4,195 islands, islets and cays surrounding the main island. It is located where the northern Caribbean Sea, Gulf of Mexico, and Atlantic Ocean meet.
+
+```{r}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+world <- ne_countries(scale = "medium", returnclass = "sf")
+cuba <- world[world$name == "Cuba", ]  
+cuba_coords <- st_coordinates(st_centroid(cuba))   
+ggplot(data = world) +
+  geom_sf(fill = "lightblue", color = "black") +  
+  annotate("point", x = cuba_coords[1], y = cuba_coords[2], 
+           color = "red", size = 3) +  
+  annotate("text", x = cuba_coords[1], y = cuba_coords[2] + 2, 
+           label = "Cuba", color = "red") + 
+  labs(title = "Cuba's Global Location",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal()  
+```
+Cuba is a socialist republic governed by the Communist Party of Cuba, with a one-party system and leadership centralized under the President and Prime Minister. Its economy is a mixed socialist model, dominated by state-controlled industries such as tourism, agriculture, and biotechnology, while facing challenges like the U.S. embargo and inefficiencies in state-run sectors. The population, approximately 11 million, reflects a mix of Afro-Cuban, European, and Mestizo heritage, with Spanish as the official language. Cuba boasts high literacy rates and universal healthcare, contributing to one of the highest life expectancies in the region. Geographically, it is the largest island in the Caribbean, featuring tropical climates and diverse ecosystems, though it is vulnerable to hurricanes and coastal erosion.
+
+```{r}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+world <- ne_countries(scale = "medium", returnclass = "sf")
+cuba <- world[world$name == "Cuba", ]  
+ggplot(data = cuba) +
+  geom_sf(fill = "lightgreen", color = "black") +  
+  labs(title = "Map of Cuba",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal()  
+```
+The two maps show the outline of the Cuba main island and surrounding small islands, as well as the location of Cuba in the whole world.
+Cuba is a socialist republic governed by the Communist Party of Cuba, with a one-party system and leadership centralized under the President and Prime Minister. Historically, Cuba transitioned from a Spanish colony to independence in 1902, and the Cuban Revolution in 1959 established its socialist state under Fidel Castro. During the Cold War, it became a focal point of global tension, notably during the Cuban Missile Crisis. Today, Cuba is culturally vibrant, renowned for its music, dance, cigars, and cuisine, which combine Spanish, African, and Caribbean influences. Despite economic and political challenges, Cuba remains a distinctive nation with a rich history and enduring cultural legacy.
+
+## Key variables of Cuba
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+library(scales)
+
+data_T <- read.csv("FinalCuba/cuba_wdi_data.csv")
+data_T$year <- as.numeric(data_T$year)
+data_T <- na.omit(data_T)
+
+plot1 <- ggplot(data_T, aes(x = year, y = NY.GDP.MKTP.CD)) +
+  geom_line(color = "blue", size = 1) +
+  labs(title = "GDP (Current US$)", x = "Year", y = "GDP") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$NY.GDP.MKTP.CD, n = 5)) +
+  theme_minimal()
+
+plot2 <- ggplot(data_T, aes(x = year, y = ST.INT.ARVL)) +
+  geom_line(color = "red", size = 1) +
+  labs(title = "International Travelers", x = "Year", y = "Travelers") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$ST.INT.ARVL, n = 5)) +
+  theme_minimal()
+
+plot3 <- ggplot(data_T, aes(x = year, y = IS.AIR.PSGR)) +
+  geom_line(color = "green", size = 1) +
+  labs(title = "Air Transport Passengers", x = "Year", y = "Air Passengers") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$IS.AIR.PSGR, n = 5)) +
+  theme_minimal()
+
+plot4 <- ggplot(data_T, aes(x = year, y = EG.USE.ELEC.KH.PC)) +
+  geom_line(color = "orange", size = 1) +
+  labs(title = "Electricity Consumption (kWh per Capita)", 
+       x = "Year", y = "Consumption") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$EG.USE.ELEC.KH.PC, n = 5)) +
+  theme_minimal()
+
+plot5 <- ggplot(data_T, aes(x = year, y = EN.ATM.PM25.MC.M3)) +
+  geom_line(color = "purple", size = 1) +
+  labs(title = "PM2.5 Air Pollution", x = "Year", y = "PM2.5") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$EN.ATM.PM25.MC.M3, n = 5)) +
+  theme_minimal()
+
+plot6 <- ggplot(data_T, aes(x = year, y = SP.POP.TOTL)) +
+  geom_line(color = "brown", size = 1) +
+  labs(title = "Population (Total)", x = "Year", y = "Population") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$SP.POP.TOTL, n = 5)) +
+  theme_minimal()
+
+plot7 <- ggplot(data_T, aes(x = year, y = IS.RRS.PASG.KM)) +
+  geom_line(color = "pink", size = 1) +
+  labs(title = "Rail Passengers", x = "Year", y = "Passengers") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$IS.RRS.PASG.KM, n = 5)) +
+  theme_minimal()
+
+plot8 <- ggplot(data_T, aes(x = year, y = SH.ALC.PCAP.LI)) +
+  geom_line(color = "darkgreen", size = 1) +
+  labs(title = "Alcohol Consumption per Capita", x = "Year", y = "Liters") +
+  scale_y_continuous(labels = comma, 
+                     breaks = pretty(data_T$SH.ALC.PCAP.LI, n = 5)) +
+  theme_minimal()
+grid.arrange(plot1, plot2, ncol = 2, heights = unit(c(5, 5), "cm")) 
+grid.arrange(plot3, plot4, ncol = 2, heights = unit(c(5, 5), "cm")) 
+grid.arrange(plot5, plot6, ncol = 2, heights = unit(c(5, 5), "cm")) 
+grid.arrange(plot7, plot8, ncol = 2, heights = unit(c(5, 5), "cm")) 
+```
+1.GDP (Current US$)
+Trend: Cuba’s GDP increased significantly from approximately 3 × 10¹⁰ in 2000 to over 1.1 × 10¹¹ by 2020.
+Insight: This upward trend suggests steady economic growth despite external sanctions and economic challenges.
+  2.International Travelers
+Trend: The number of international travelers increased steadily, peaking in 2018, but dropped sharply in 2020.
+Insight: The sharp decline in 2020 is likely due to the global COVID-19 pandemic, which disrupted international travel and highlighted the vulnerability of Cuba’s tourism sector.
+  3.Air Transport Passengers
+Trend: The number of air passengers rose sharply around 2010, followed by a notable decline in subsequent years.
+Insight: Early growth reflects increased tourism and improved policies, whereas the decline may stem from economic pressures and shifting global conditions.
+  4.Electricity Consumption (kWh per Capita)
+Trend: Per capita electricity consumption grew steadily, particularly after 2010.
+Insight: This trend indicates improvements in Cuba’s energy infrastructure and growing socioeconomic activity.
+  5.PM2.5 Air Pollution
+Trend: PM2.5 concentrations were high in 2000 but showed a gradual decline, with some fluctuations after 2015.
+Insight: The overall improvement reflects efforts to address air quality; however, the fluctuations suggest continued challenges related to industrial and transport emissions.
+  6.Population (Total)
+Trend: The population steadily increased until 2015, after which it leveled off and began to decline slightly.
+Insight: The recent decline may be driven by lower birth rates, increased emigration, and changes in demographic dynamics.
+  7.Rail Passengers
+Trend: The number of rail passengers peaked around 2005 but declined sharply thereafter.
+Insight: The decline suggests issues with aging infrastructure, reduced investment, and competition from alternative transportation systems.
+  8.Alcohol Consumption per Capita
+Trend: Alcohol consumption per capita rose until 2015 before dropping significantly.
+Insight: This decline may reflect changes in health policies, economic conditions, or cultural shifts.
+
+## Comparison of Cuba
+
+```{r}
+library(ggplot2)
+library(dplyr)
+gdp_data <- read.csv("cuba_bahamas_haiti_gdp.csv")
+gdp_data <- na.omit(gdp_data)
+ggplot(gdp_data, aes(x = year, y = GDP, color = country)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::comma) + 
+  labs(title = "GDP Comparison: Cuba, Bahamas, and Haiti",
+       x = "Year",
+       y = "GDP (Current US$)",
+       color = "Country") +
+  theme_minimal()
+```
+The chart illustrates the GDP trends of Cuba, the Bahamas, and Haiti over the period from 2000 to 2023. As shown in the graph, Cuba has a significantly higher GDP compared to its two neighboring countries and shows an upward trend. For the Bahamas and Haiti, their GDP levels are relatively close, but after 2008, Haiti surpassed the Bahamas. This indicates that Cuba has a relatively strong and developing economy within its surrounding region.
+
+## References
+1. World Bank: Cuba Economic Indicators.
+2. Open AI Chat GPT.
+3. Machín-Gómez, G. (2008). Political Challenges and External Pressure: A Case Study of Cuba. Policy Perspectives, 5(3), 19-29.
+4. Gunn, G. (1991). Cuba in Crisis. Current History, 90(554), 101-135.
+5. Baloyra, E. A., & Morris, J. A. (Eds.). (1993). Conflict and change in Cuba. UNM Press.
